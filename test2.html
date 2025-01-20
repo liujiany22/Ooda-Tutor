@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Touch Collision</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 两个正方形属性
+    const square1 = {
+      x: 150,
+      y: 150,
+      size: 100,
+      color: 'blue',
+    };
+
+    const square2 = {
+      x: 50,
+      y: 50,
+      size: 100,
+      color: 'green',
+      isDragging: false,
+    };
+
+    // 绘制所有正方形
+    function drawSquares() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除画布
+
+      // 绘制第一个正方形
+      ctx.fillStyle = square1.color;
+      ctx.fillRect(square1.x, square1.y, square1.size, square1.size);
+
+      // 绘制第二个正方形
+      ctx.fillStyle = square2.color;
+      ctx.fillRect(square2.x, square2.y, square2.size, square2.size);
+    }
+
+    // 碰撞检测函数
+    function isColliding(sq1, sq2) {
+      return (
+        sq1.x < sq2.x + sq2.size &&
+        sq1.x + sq1.size > sq2.x &&
+        sq1.y < sq2.y + sq2.size &&
+        sq1.y + sq1.size > sq2.y
+      );
+    }
+
+    // 触屏开始事件
+    canvas.addEventListener('touchstart', (event) => {
+      const touch = event.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const touchX = touch.clientX - rect.left;
+      const touchY = touch.clientY - rect.top;
+
+      // 检测是否开始拖动 square2
+      if (
+        touchX >= square2.x &&
+        touchX <= square2.x + square2.size &&
+        touchY >= square2.y &&
+        touchY <= square2.y + square2.size
+      ) {
+        square2.isDragging = true;
+      }
+    });
+
+    // 触屏移动事件
+    canvas.addEventListener('touchmove', (event) => {
+      if (!square2.isDragging) return;
+
+      const touch = event.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const touchX = touch.clientX - rect.left;
+      const touchY = touch.clientY - rect.top;
+
+      // 更新 square2 的位置
+      square2.x = touchX - square2.size / 2;
+      square2.y = touchY - square2.size / 2;
+
+      drawSquares();
+
+      // 检测两个正方形是否碰撞
+      if (isColliding(square1, square2)) {
+        alert('!!!');
+      }
+    });
+
+    // 触屏结束事件
+    canvas.addEventListener('touchend', () => {
+      square2.isDragging = false;
+    });
+
+    // 初始化
+    drawSquares();
+  </script>
+</body>
+</html>
