@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #a{
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background-color: #bfa;
+        }
+        #b{
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: skyblue;
+            left: 300px;
+            transition: all 1s linear;
+        }
+    </style>
+</head>
+<body>
+    <div id="a">
+        <div id="b"></div>
+    </div>
+    <script>
+        // 当点击b元素时，b元素向a元素前进
+        var aDom = document.getElementById("a")
+        var bDom = document.getElementById("b")
+        bDom.addEventListener('click',()=>{
+            b.style.left = '0px'
+        })
+        // 节点相交监听器，当a和b相交/离开时触发回调函数（注意：页面刚开始，即使两个元素没相交，回调函数也会执行一次，因为页面刚构造完成，浏览器就判断这两个元素处于离开状态，因此会在一开始执行一次），
+        var io = new IntersectionObserver((entries,observer)=>{
+            // 如果不是相交，则直接返回
+            if(!entries[0].isIntersecting) return
+            console.log('你碰到我了~我直接隐藏')
+            bDom.style.display = 'none'
+        },{
+            root:aDom,
+        })
+        io.observe(bDom)
+    </script>
+</body>
+</html>
